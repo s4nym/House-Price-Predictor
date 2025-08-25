@@ -4,14 +4,14 @@ import pandas as pd
 import numpy as np
 import joblib
 
-# --- Load model ---
+# --- Load the trained XGBoost model ---
 model = joblib.load("house_price_xgb.pkl")
 
 st.set_page_config(page_title="House Price Predictor", layout="centered")
 st.title("🏠 House Price Predictor (India)")
-st.markdown("Enter the property details below to estimate the price:")
+st.markdown("Enter the property details below to estimate the house price:")
 
-# --- User Inputs ---
+# --- User input function ---
 def user_input_features():
     data = {
         'number of bedrooms': st.number_input("Number of Bedrooms", min_value=1, max_value=10, value=3),
@@ -39,7 +39,7 @@ def user_input_features():
 
 input_df = user_input_features()
 
-# --- Prediction ---
+# --- Predict ---
 if st.button("Predict Price"):
     pred_log = model.predict(input_df)[0]
     pred = np.expm1(pred_log)  # undo log-transform
