@@ -1,57 +1,126 @@
-# 🏠 House Price Predictor
+# 🏠 House Price Predictor (India)
 
-A simple Machine Learning project that predicts house prices based on real housing data.  
-Built with **Python, scikit-learn, and Streamlit**, this app lets you adjust features like income, house age, rooms, and location — then instantly see a predicted price.
-
----
-
-## 🚀 Live Demo
-👉 [Try it here on Streamlit](https://your-app-link.streamlit.app)  
-*(link will work after deployment)*
+A Streamlit web app that predicts house prices in India using machine learning. Built with **XGBoost**, it uses real estate features to estimate the expected price of a house. Perfect for portfolio showcase, data science demos, or learning ML deployment.
 
 ---
 
-## 📂 Project Structure
+## 🔹 Features
 
-house-price-predictor/ ├── app.py               # Streamlit app ├── house_price_model.pkl # Trained ML model ├── notebook.ipynb       # Model training notebook ├── requirements.txt     # Dependencies └── README.md            # Project description
-
----
-
-## ⚙️ How It Works
-1. **Dataset** → California Housing dataset (features like median income, house age, population, latitude/longitude).  
-2. **Model** → Linear Regression trained to predict median house value.  
-3. **Streamlit App** → Interactive sliders let you input values → model predicts price in USD.  
-
----
-
-## 📊 Example Prediction
-If you set:
-- Median Income: 5 (=$50k)  
-- House Age: 20 years  
-- Average Rooms: 6  
-- Population: 1000  
-- Latitude: 35, Longitude: -120  
-
-👉 Predicted price ≈ **$200,000 – $250,000**
+- Predict house prices using **20+ features**, including:
+  - Number of bedrooms & bathrooms
+  - Living area & lot area
+  - House grade, condition, floors
+  - Built year & renovation year
+  - Location info (latitude, longitude, postal code)
+  - Nearby schools, distance from airport, waterfront, etc.
+- Log-transformed target to handle price skew
+- Real-time predictions in a **user-friendly Streamlit interface**
+- Feature importance plots (optional) to understand which attributes drive prices
 
 ---
 
-## 🛠 Tech Stack
-- Python  
-- Pandas, NumPy  
-- Scikit-learn  
-- Streamlit  
-- Joblib  
+## 📊 Dataset
+
+- Source: [House Price India CSV](https://raw.githubusercontent.com/s4nym/House-Price-Predictor/main/House%20Price%20India.csv)
+- 14,619 rows, 23 columns
+- Target: `Price` (INR)
+- Features include numeric, categorical indicators for house attributes and location
+
+**Price statistics:**
+
+| Metric | Value |
+|--------|-------|
+| Count  | 14,619 |
+| Mean   | 5,38,806 ₹ |
+| Min    | 78,000 ₹ |
+| Max    | 7,700,000 ₹ |
+| Median | 4,50,000 ₹ |
 
 ---
 
-## 🔮 Future Improvements
-- Try advanced models (Random Forest, XGBoost).  
-- Add better visualization for results.  
-- Deploy with custom dataset options.  
+## 🛠 Technology Stack
+
+- Python 3.10+
+- Libraries:
+  - `pandas`, `numpy` — data handling
+  - `scikit-learn` — preprocessing & evaluation
+  - `xgboost` — regression model
+  - `joblib` — model serialization
+  - `streamlit` — interactive web app
+  - `matplotlib`, `seaborn` — feature importance visualization
 
 ---
 
-## 👤 Author
+## 🚀 How to Run Locally
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/s4nym/House-Price-Predictor.git
+cd House-Price-Predictor
+```
+
+2. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. Run the Streamlit app:
+
+```bash
+streamlit run app.py
+```
+
+4. The app will open in your browser at `http://localhost:8501`
+
+---
+
+## 📈 Model
+
+- **Trained models compared:**
+  - Linear Regression — RMSE: 0.251, R²: 0.78
+  - Random Forest — RMSE: 0.174, R²: 0.89
+  - XGBoost — RMSE: 0.161, R²: 0.91 ✅ (Best model)
+- The app uses **XGBoost** for real-time predictions.
+- Log-transform applied on `Price` for better model performance.
+
+---
+
+## 🔹 Usage
+
+1. Enter property details in the app (defaults provided).
+2. Click **Predict Price**.
+3. Get the estimated price in INR instantly.
+
+**Default input example:**
+- 3 Bedrooms, 2 Bathrooms  
+- 1000 sq.ft living area, 5000 sq.ft lot  
+- Grade 7, Built 2000, Renovated 2000  
+- Distance from airport 20 km, 5 nearby schools  
+
+Predicted price with defaults: ~₹2,57,592 (reasonable for a small-to-medium house).
+
+---
+
+## 📂 Files in Repository
+
+- `app.py` — Streamlit app  
+- `house_price_xgb.pkl` — saved XGBoost model  
+- `House Price India.csv` — dataset  
+- `requirements.txt` — Python dependencies  
+
+---
+
+## 👨‍💻 Author
+
 **Sanyam Sood**  
- 📂 [GitHub](https://github.com/s4nym)
+
+---
+
+## ⚡ Future Improvements
+
+- Add **interactive feature importance charts** in the app  
+- Integrate **map visualization** for location-based pricing  
+- Enable **batch predictions** for multiple properties  
+- Explore **other ML models** for better accuracy
