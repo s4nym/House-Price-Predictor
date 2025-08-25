@@ -1,29 +1,50 @@
-
 import streamlit as st
 import numpy as np
 import joblib
+import requests
 
-# Load the trained model
+# Load trained model
 model = joblib.load("house_price_model.pkl")
+
+# Get real-time USD→INR conversion
+def get_usd_to_inr():
+    try:
+        url = "https://api.exchangerate-api.com/v4/latest/USD"
+        response = requests.get(url).json()
+        return response["rates"]["INR"]
+    except:
+        return 83  # fallback value if API fails
+
+USD_TO_INR = get_usd_to_inr()
 
 st.set_page_config(page_title="House Price Predictor", page_icon="🏠", layout="centered")
 
 # App title
-st.title("🏠 House Price Predictor")
-st.write("Enter house details below to predict its price.")
+st.title("🏠 House Price Predictor (INR)")
+st.write("Enter details below to estimate a house price in Indian Rupees (₹).")
 
-# User inputs
-MedInc = st.slider("Median Income in Area (10k USD)", 0.0, 15.0, 5.0)
-HouseAge = st.slider("House Age (years)", 1, 100, 20)
-AveRooms = st.slider("Average Rooms per Household", 1.0, 15.0, 6.0)
-AveBedrms = st.slider("Average Bedrooms per Household", 1.0, 5.0, 1.0)
-Population = st.slider("Population in Area", 100, 50000, 1000)
-AveOccup = st.slider("Average Occupancy per Household", 1.0, 10.0, 3.0)
-Latitude = st.slider("Latitude", 32.0, 42.0, 35.0)
-Longitude = st.slider("Longitude", -124.0, -114.0, -120.0)
+# User-friendly inputs
+income = st.slider("Median Household Income (in Lakhs ₹)", 1, 50, 10)   # e.g. ₹10L
+house_age = st.slider("House Age (years)", 1, 100, 20)
+rooms = st.slider("Number of Rooms", 1, 10, 5)
+bedrooms = st.slider("Number of Bedrooms", 1, 5, 2)
+population = st.slider("Population in Area", 500, 30000, 5000, step=500)
+occupancy = st.slider("Average Occupancy per Household", 1, 10, 3)
+latitude = st.slider("Latitude", 32, 42, 35)
+longitude = st.slider("Longitude", -124, -114, -120)
 
 # Make prediction
 if st.button("Predict Price"):
-    input_data = np.array([[MedInc, HouseAge, AveRooms, AveBedrms, Population, AveOccup, Latitude, Longitude]])
-    prediction = model.predict(input_data)[0]
-    st.success(f"💰 Predicted House Price: **${prediction*100000:,.2f}**")
+    # Convert inputs to match dataset scale
+    MedInc = income / 0.83  # approx conversion: ₹10L ~ $12k (rough scaling)
+    AveRooms = float(rooms)
+    AveBedrms = float(bedrooms)
+    AveOccup = float(occupancy)
+
+    input_data = np.array([[MedInc, house_age, AveRooms, AveBedrms, population, AveOccup, latitude, longitude]])
+    
+    prediction_usd = model.predict(input_data)[0]
+    prediction_inr = prediction_usd * 100000 * USD_TO_INR
+    
+    st.success(f"💰 Predicted House Price: **₹{prediction_inr:,.0f}**")
+    st.caption(f"(Using live USD→INR rate: {USD_TO_INR:.2f})")
